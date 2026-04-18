@@ -1,0 +1,13 @@
+.streamlit/secrets.toml
+.playwright-mcp/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+.env
+*.egg-info/
+.vscode/
+.idea/
