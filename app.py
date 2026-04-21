@@ -15,10 +15,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-from auth import require_password
-
-require_password()
-
 import db
 from rollover import run_rollover_if_needed
 from views import archive as archive_view
