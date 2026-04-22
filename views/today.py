@@ -6,8 +6,8 @@ import db
 
 
 _BADGE_HTML = (
-    "<span style='font-size:0.7rem;color:#0068c9;font-weight:600;"
-    "text-transform:uppercase;letter-spacing:0.05em;margin-left:6px;'>daily</span>"
+    "<span style='font-size:0.6875rem;color:var(--recurring);font-weight:600;"
+    "text-transform:uppercase;letter-spacing:0.1em;margin-left:8px;'>daily</span>"
 )
 
 
@@ -40,24 +40,21 @@ def _render_quick_add() -> None:
         label_visibility="collapsed",
         on_change=_submit_quick_add,
     )
-    c1, c2 = st.columns(2)
-    with c1:
-        st.radio(
-            "Target",
-            ["Today", "Parking Lot"],
-            key="quick_add_target",
-            horizontal=True,
-            label_visibility="collapsed",
-        )
-    with c2:
-        if st.button("Add", use_container_width=True, type="primary"):
-            _submit_quick_add()
-            st.rerun()
+    st.radio(
+        "Target",
+        ["Today", "Parking Lot"],
+        key="quick_add_target",
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+    if st.button("Add", use_container_width=True, type="primary"):
+        _submit_quick_add()
+        st.rerun()
 
 
 def _render_open_tasks(tasks: list[dict]) -> None:
     if not tasks:
-        st.info("All done for today 🎉")
+        st.info("All done for today.")
         return
     for t in tasks:
         c1, c2, c3 = st.columns([1, 6, 2])
@@ -80,7 +77,8 @@ def _render_open_tasks(tasks: list[dict]) -> None:
 def _render_completed_tasks(tasks: list[dict]) -> None:
     if not tasks:
         return
-    with st.expander(f"▸ {len(tasks)} completed — tap to view", expanded=False):
+    label = f"Completed · {len(tasks)}"
+    with st.expander(label, expanded=False):
         for t in tasks:
             c1, c2 = st.columns([1, 8])
             still_done = c1.checkbox(
@@ -94,13 +92,14 @@ def _render_completed_tasks(tasks: list[dict]) -> None:
                 st.rerun()
             badge = _BADGE_HTML if _is_recurring(t) else ""
             c2.markdown(
-                f"<span style='text-decoration:line-through;color:#6b7280'>{t['text']}</span>{badge}",
+                f"<span style='text-decoration:line-through;color:var(--text-muted)'>"
+                f"{t['text']}</span>{badge}",
                 unsafe_allow_html=True,
             )
 
 
 def _render_parking_lot(tasks: list[dict]) -> None:
-    label = f"Parking Lot — {len(tasks)} item{'s' if len(tasks) != 1 else ''}"
+    label = f"Parking Lot · {len(tasks)} item{'s' if len(tasks) != 1 else ''}"
     with st.expander(label, expanded=False):
         if not tasks:
             st.caption("Parking lot is empty")
@@ -119,13 +118,13 @@ def render() -> None:
     parking = db.get_parking()
 
     _render_progress(len(open_today), len(completed_today))
-    st.divider()
-    _render_quick_add()
-    st.divider()
 
     st.caption(f"TODAY · {len(open_today)} open")
     _render_open_tasks(open_today)
     _render_completed_tasks(completed_today)
+
+    st.divider()
+    _render_quick_add()
 
     st.divider()
     _render_parking_lot(parking)
