@@ -54,8 +54,13 @@ def _render_open_tasks(tasks: list[dict]) -> None:
         st.info("All done for today.")
         return
     for t in tasks:
-        c1, c2, c3 = st.columns([1, 6, 2])
-        done_now = c1.checkbox(
+        c_text, c_check, c_park = st.columns([6, 1, 2])
+        badge = _BADGE_HTML if _is_recurring(t) else ""
+        c_text.markdown(
+            f"<span class='task-text'>{t['text']}{badge}</span>",
+            unsafe_allow_html=True,
+        )
+        done_now = c_check.checkbox(
             "done",
             value=False,
             key=f"done_{t['id']}",
@@ -64,12 +69,7 @@ def _render_open_tasks(tasks: list[dict]) -> None:
         if done_now:
             db.set_done(t["id"], True)
             st.rerun()
-        badge = _BADGE_HTML if _is_recurring(t) else ""
-        c2.markdown(
-            f"<span class='task-text'>{t['text']}{badge}</span>",
-            unsafe_allow_html=True,
-        )
-        if c3.button("→ Park", key=f"park_{t['id']}", use_container_width=True):
+        if c_park.button("→ Park", key=f"park_{t['id']}", use_container_width=True):
             db.move_task(t["id"], "parking")
             st.rerun()
 
@@ -80,8 +80,13 @@ def _render_completed_tasks(tasks: list[dict]) -> None:
     label = f"Completed · {len(tasks)}"
     with st.expander(label, expanded=False):
         for t in tasks:
-            c1, c2 = st.columns([1, 8])
-            still_done = c1.checkbox(
+            c_text, c_check = st.columns([8, 1])
+            badge = _BADGE_HTML if _is_recurring(t) else ""
+            c_text.markdown(
+                f"<span class='task-text completed'>{t['text']}{badge}</span>",
+                unsafe_allow_html=True,
+            )
+            still_done = c_check.checkbox(
                 "done",
                 value=True,
                 key=f"done_{t['id']}",
@@ -90,11 +95,6 @@ def _render_completed_tasks(tasks: list[dict]) -> None:
             if not still_done:
                 db.set_done(t["id"], False)
                 st.rerun()
-            badge = _BADGE_HTML if _is_recurring(t) else ""
-            c2.markdown(
-                f"<span class='task-text completed'>{t['text']}{badge}</span>",
-                unsafe_allow_html=True,
-            )
 
 
 def _render_parking_lot(tasks: list[dict]) -> None:
