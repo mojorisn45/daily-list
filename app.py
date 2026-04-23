@@ -309,11 +309,22 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+import importlib
+
 import db
 from rollover import run_rollover_if_needed
 from views import archive as archive_view
 from views import recurring as recurring_view
 from views import today as today_view
+
+# Streamlit Cloud caches submodule imports across reruns — a git push of
+# only views/*.py does not reliably flush them. Force reload so layout
+# edits land without a manual app reboot.
+importlib.reload(today_view)
+importlib.reload(archive_view)
+importlib.reload(recurring_view)
+importlib.reload(db)
+importlib.reload(__import__("rollover"))
 
 run_rollover_if_needed()
 
