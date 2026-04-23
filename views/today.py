@@ -6,8 +6,11 @@ import db
 
 
 _BADGE_HTML = (
-    "<span style='font-size:0.6875rem;color:var(--recurring);font-weight:600;"
-    "text-transform:uppercase;letter-spacing:0.1em;margin-left:8px;'>daily</span>"
+    "<span style='display:inline-block;background:var(--recurring-soft);"
+    "color:var(--recurring);font-size:0.6875rem;font-weight:700;"
+    "text-transform:uppercase;letter-spacing:0.08em;"
+    "padding:2px 8px;border-radius:999px;margin-left:8px;"
+    "vertical-align:middle;'>daily</span>"
 )
 
 

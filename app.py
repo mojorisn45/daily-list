@@ -12,14 +12,16 @@ st.markdown(
     :root {
         --bg: #FBFAF6;
         --surface: #F2F0E9;
-        --text: #1A1A14;
+        --text: #17170F;
         --text-muted: #76736B;
         --border: #E8E5DC;
         --border-strong: #D6D1C3;
-        --accent: #2E5C3E;
-        --accent-hover: #1F4530;
-        --accent-soft: #E6EDE7;
-        --recurring: #8B6F47;
+        --accent: #15803D;
+        --accent-hover: #0F6B33;
+        --accent-soft: #DCFCE7;
+        --recurring: #B45309;
+        --recurring-soft: #FEF3C7;
+        --park: #B45309;
     }
 
     /* --- Typography --- */
@@ -48,28 +50,53 @@ st.markdown(
 
     /* --- Body paragraphs (task text, etc) --- */
     [data-testid="stMarkdownContainer"] p {
-        font-size: 1.0625rem;
-        font-weight: 500;
+        font-size: 1.125rem;
+        font-weight: 600;
         line-height: 1.4;
         color: var(--text);
         margin: 0;
+        letter-spacing: -0.005em;
+    }
+
+    /* Button text should inherit button color, not body text color */
+    .stButton button [data-testid="stMarkdownContainer"] p {
+        color: inherit !important;
+        font-size: 0.9375rem !important;
+        font-weight: 500 !important;
+    }
+    .stButton > button[data-testid="stBaseButton-primary"] [data-testid="stMarkdownContainer"] p {
+        color: white !important;
+        font-weight: 600 !important;
     }
 
     /* --- Captions (date, section labels) --- */
     [data-testid="stCaptionContainer"] p,
     .stCaption p {
         color: var(--text-muted) !important;
-        font-size: 0.6875rem !important;
-        font-weight: 600 !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.1em;
     }
-    /* Date caption directly under title: regular case */
-    h1 + [data-testid="stElementContainer"] [data-testid="stCaptionContainer"] p {
-        text-transform: none !important;
-        letter-spacing: 0 !important;
-        font-size: 0.9375rem !important;
-        font-weight: 400 !important;
+    /* Colored bullet before section labels that start with TODAY / DAILY RECURRING */
+    [data-testid="stCaptionContainer"] p::before {
+        content: "";
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: var(--accent);
+        margin-right: 0.6em;
+        vertical-align: middle;
+        transform: translateY(-1px);
+    }
+    /* Date rendered as plain HTML div to bypass caption styling */
+    .app-date {
+        color: var(--text-muted);
+        font-size: 0.9375rem;
+        font-weight: 400;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0;
     }
 
     /* --- Checkboxes: bigger visual square --- */
@@ -292,7 +319,10 @@ run_rollover_if_needed()
 
 today_date = db.today_local()
 st.markdown("# Daily List")
-st.caption(today_date.strftime("%A, %B %d, %Y"))
+st.markdown(
+    f"<div class='app-date'>{today_date.strftime('%A, %B %d, %Y')}</div>",
+    unsafe_allow_html=True,
+)
 
 tab_today, tab_archive, tab_recurring = st.tabs(["Today", "Archive", "Recurring"])
 with tab_today:
