@@ -5,13 +5,7 @@ import streamlit as st
 import db
 
 
-_BADGE_HTML = (
-    "<span style='display:inline-block;background:var(--recurring-soft);"
-    "color:var(--recurring);font-size:0.6875rem;font-weight:700;"
-    "text-transform:uppercase;letter-spacing:0.08em;"
-    "padding:2px 8px;border-radius:999px;margin-left:8px;"
-    "vertical-align:middle;'>daily</span>"
-)
+_BADGE_HTML = "<span class='daily-badge'>daily</span>"
 
 
 def _is_recurring(t: dict) -> bool:
@@ -71,7 +65,10 @@ def _render_open_tasks(tasks: list[dict]) -> None:
             db.set_done(t["id"], True)
             st.rerun()
         badge = _BADGE_HTML if _is_recurring(t) else ""
-        c2.markdown(f"{t['text']}{badge}", unsafe_allow_html=True)
+        c2.markdown(
+            f"<span class='task-text'>{t['text']}{badge}</span>",
+            unsafe_allow_html=True,
+        )
         if c3.button("→ Park", key=f"park_{t['id']}", use_container_width=True):
             db.move_task(t["id"], "parking")
             st.rerun()
@@ -95,8 +92,7 @@ def _render_completed_tasks(tasks: list[dict]) -> None:
                 st.rerun()
             badge = _BADGE_HTML if _is_recurring(t) else ""
             c2.markdown(
-                f"<span style='text-decoration:line-through;color:var(--text-muted)'>"
-                f"{t['text']}</span>{badge}",
+                f"<span class='task-text completed'>{t['text']}{badge}</span>",
                 unsafe_allow_html=True,
             )
 
@@ -109,7 +105,10 @@ def _render_parking_lot(tasks: list[dict]) -> None:
             return
         for t in tasks:
             c1, c2 = st.columns([6, 2])
-            c1.markdown(t["text"])
+            c1.markdown(
+                f"<span class='task-text'>{t['text']}</span>",
+                unsafe_allow_html=True,
+            )
             if c2.button("→ Today", key=f"promote_{t['id']}", use_container_width=True):
                 db.move_task(t["id"], "today")
                 st.rerun()

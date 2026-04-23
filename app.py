@@ -48,14 +48,41 @@ st.markdown(
         margin: 0 0 0.125rem;
     }
 
-    /* --- Body paragraphs (task text, etc) --- */
+    /* --- Body paragraphs (default size) --- */
     [data-testid="stMarkdownContainer"] p {
-        font-size: 1.125rem;
-        font-weight: 600;
+        font-size: 1rem;
+        font-weight: 500;
         line-height: 1.4;
         color: var(--text);
         margin: 0;
-        letter-spacing: -0.005em;
+    }
+
+    /* --- Task text: the main thing the user reads at a glance --- */
+    .task-text, [data-testid="stMarkdownContainer"] .task-text {
+        font-size: 1.375rem !important;
+        font-weight: 600 !important;
+        line-height: 1.3 !important;
+        color: var(--text) !important;
+        letter-spacing: -0.015em !important;
+        display: block;
+    }
+    .task-text.completed {
+        text-decoration: line-through !important;
+        color: var(--text-muted) !important;
+    }
+    .task-text .daily-badge {
+        display: inline-block;
+        background: var(--recurring-soft);
+        color: var(--recurring);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 2px 8px;
+        border-radius: 999px;
+        margin-left: 8px;
+        vertical-align: middle;
+        line-height: 1;
     }
 
     /* Button text should inherit button color, not body text color */
